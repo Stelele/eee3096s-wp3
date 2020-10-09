@@ -157,6 +157,7 @@ def btn_guess_pressed(channel):
     # - Store the scores back to the EEPROM, being sure to update the score count
     print("btn_guess pressed")
     accuracy_leds()
+    trigger_buzzer()
     pass
 
 
@@ -184,8 +185,25 @@ def trigger_buzzer():
     # If the user is off by an absolute value of 3, the buzzer should sound once every second
     # If the user is off by an absolute value of 2, the buzzer should sound twice every second
     # If the user is off by an absolute value of 1, the buzzer should sound 4 times a second
-    pass
+    
+    global value
+    global number_guess
+    global buzzer
 
+    offset = abs(value - number_guess)
+
+    if offset == 3:
+        buzzer.ChangeFrequency(1)
+    elif offset == 2:
+        buzzer.ChangeFrequency(2)
+    elif offset == 1:
+        buzzer.ChangeFrequency(4)
+    
+
+    if offset < 4:
+        buzzer.start(50)
+    else:
+        buzzer.stop()
 
 if __name__ == "__main__":
     try:
