@@ -55,9 +55,19 @@ def menu():
 
 
 def display_scores(count, raw_data):
+    '''
+    Prints out the top 3 scores from the eeprom
+    '''
     # print the scores to the screen in the expected format
     print("There are {} scores. Here are the top 3!".format(count))
     # print out the scores in the required format
+    raw_data.sort(key=lambda x: x[1])
+    index = count - 1
+    counter = 1
+    while (index >= 0 and counter <= 3):
+        print("{} - {} took {} guesses".format(counter, raw_data[index][0], raw_data[index][1]))
+        index -= 1
+        counter += 1
     pass
 
 
@@ -72,23 +82,44 @@ def setup():
 
 # Load high scores
 def fetch_scores():
+    '''
+    Fetches the scores from the eeprom
+
+    :return: number of scores and 2D array containing arrays of the format ['nam': score]
+    '''
     # get however many scores there are
-    score_count = None
+    score_count = eeprom.read_byte(0)
     # Get the scores
-    
+    scores_raw = eeprom.read_block(1, score_count * 4)    
     # convert the codes back to ascii
-    
+    scores = []
+    for i in range (0, len(scores_raw), 4):
+        name_i = ''
+        for j in range(i, i + 3):
+            name_i += chr( scores_raw[j] )
+        scores.append( [ name_i, scores_raw[i+3] ] )
     # return back the results
     return score_count, scores
 
 
 # Save high scores
-def save_scores():
+def save_scores(new_score):
     # fetch scores
+    count, scores = fetch_scores()
     # include new score
+    scores.append(new_score)
     # sort
+    scores.sort(key=lambda x: x[1])
     # update total amount of scores
+    count += 1
     # write new scores
+    data_to_write = []
+    for score in scores:
+        for letter in score[0]:
+            data_to_write.append(ord(letter))
+        data_to_write.append(score[1])
+    eeprom.write_block(0, [count])
+    eeprom.write_block(1, data_to_write)
     pass
 
 
