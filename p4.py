@@ -156,6 +156,8 @@ def save_scores(new_score):
     # write new scores
     data_to_write = []
     for score in scores:
+        for i in range(3 - len(score[0]) ):
+            score[0] += ' '
         for letter in score[0]:
             data_to_write.append(ord(letter))
         data_to_write.append(score[1])
