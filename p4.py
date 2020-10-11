@@ -83,7 +83,7 @@ def display_scores(count, raw_data):
     raw_data.sort(key=lambda x: x[1])
     index = 0
     stop_value = 3 if count > 3 else count
-    
+
     while (index < stop_value):
         print("{} - {} took {} guesses".format(index+1, raw_data[index][0], raw_data[index][1]))
         index += 1
@@ -273,12 +273,12 @@ def accuracy_leds():
     # - If they guessed 7, the brightness would be at ((8-7)/(8-6)*100 = 50%
     global value
     global number_guess
-    global accuracy_leds
+    global LED_accuracy
 
     offset = abs(value - number_guess)
     dc = ((8-offset)/8)*100
 
-    LED_accuracy.ChangeDutyCycle(dc)
+    LED_accuracy.start(dc)
 
 
 # Sound Buzzer
